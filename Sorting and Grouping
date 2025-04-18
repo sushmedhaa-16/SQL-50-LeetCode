@@ -1,0 +1,53 @@
+--596. Classes More Than 5 Students--
+# Write your MySQL query statement below
+SELECT class
+FROM Courses
+GROUP BY class
+HAVING count(student) >= 5;
+
+
+--619. Biggest Single Number--
+# Write your MySQL query statement below
+SELECT max(num) AS num
+FROM MyNumbers
+WHERE num IN (
+    SELECT num FROM MyNumbers GROUP BY num HAVING COUNT(*) = 1
+);
+
+--1070. Product Sales Analysis III--
+# Write your MySQL query statement below
+SELECT product_id, year AS first_year, quantity, price
+FROM Sales
+WHERE 
+  (product_id, year) 
+  IN (SELECT product_id, MIN(year) 
+  FROM Sales GROUP BY 1);
+
+--1141. User Activity for the Past 30 Days I--
+# Write your MySQL query statement below
+SELECT activity_date AS day, COUNT( DISTINCT user_id) AS active_users
+FROM Activity 
+WHERE DATEDIFF('2019-07-27', activity_date) < 30 AND DATEDIFF('2019-07-27', activity_date) >= 0
+GROUP BY 1;
+
+--1729. Find Followers Count--
+# Write your MySQL query statement below
+SELECT user_id, COUNT(follower_id) AS followers_count
+FROM Followers
+GROUP BY user_id
+ORDER BY user_id ASC;
+
+--2356. Number of Unique Subjects Taught by Each Teacher--
+# Write your MySQL query statement below
+SELECT teacher_id, COUNT(DISTINCT(subject_id)) AS cnt
+FROM Teacher
+GROUP BY teacher_id;
+
+--1045. Customers Who Bought All Products--
+# Write your MySQL query statement below
+SELECT customer_id 
+FROM Customer
+GROUP BY customer_id
+HAVING SUM(DISTINCT product_key) = (SELECT SUM(product_key) FROM Product)
+
+
