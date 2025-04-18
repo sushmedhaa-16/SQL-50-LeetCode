@@ -1,0 +1,94 @@
+--550. Game Play Analysis IV--
+# Write your MySQL query statement below
+SELECT
+  ROUND(
+    COUNT(A1.player_id)
+    / (SELECT COUNT(DISTINCT A3.player_id) FROM Activity A3)
+  , 2) AS fraction
+FROM
+  Activity A1
+WHERE
+  (A1.player_id, DATE_SUB(A1.event_date, INTERVAL 1 DAY)) IN (
+    SELECT
+      A2.player_id,
+      MIN(A2.event_date)
+    FROM
+      Activity A2
+    GROUP BY
+      A2.player_id
+  );
+
+
+--620. Not Boring Movies--
+# Write your MySQL query statement below
+SELECT id, movie, description, rating 
+FROM Cinema
+WHERE id%2 != 0 and description != "boring"
+ORDER BY rating DESC;
+
+
+
+--1075. Project Employees I--
+# Write your MySQL query statement below
+SELECT Project.project_id, ROUND(AVG(experience_years),2) as average_years
+FROM Project JOIN Employee
+ON Project.employee_id = Employee.employee_id
+GROUP BY project_id;
+
+
+
+--1174. Immediate Food Delivery II--
+# Write your MySQL query statement below
+SELECT ROUND (
+  AVG(
+    CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END
+    ) * 100 , 2) AS immediate_percentage
+FROM Delivery
+WHERE (customer_id, order_date) IN
+(
+    SELECT customer_id, min(order_date) 
+    FROM Delivery 
+    GROUP BY customer_id
+);
+
+
+--1193. Monthly Transactions I--
+# Write your MySQL query statement below
+SELECT 
+  LEFT(trans_date,7) AS month, 
+  country, 
+  COUNT(id) AS trans_count, 
+  SUM(state = 'approved') AS approved_count, 
+  SUM(amount) as trans_total_amount, 
+  SUM(CASE 
+    WHEN state = 'approved' THEN amount 
+    ELSE 0 
+    END) AS approved_total_amount
+FROM Transactions
+GROUP BY month, country;
+
+
+
+--1211. Queries Quality and Percentage--
+# Write your MySQL query statement below
+SELECT query_name, ROUND(AVG(rating / position), 2) AS quality, ROUND((AVG(CASE WHEN rating < 3 THEN 1 ELSE 0 END) * 100), 2) AS poor_query_percentage
+FROM Queries
+GROUP BY query_name;
+
+
+--1251. Average Selling Price--
+# Write your MySQL query statement below
+SELECT prices.product_id, ROUND(SUM(price * units) / SUM(units), 2) AS average_price
+FROM Prices JOIN UnitsSold 
+ON prices.product_id = unitssold.product_id
+AND purchase_date BETWEEN start_date AND end_date
+GROUP BY product_id;
+
+
+--1633. Percentage of Users Attended a Contest--
+# Write your MySQL query statement below
+SELECT contest_id, ROUND(COUNT(user_id) / (SELECT COUNT(user_id) FROM users) * 100, 2) AS percentage
+FROM register
+GROUP BY contest_id
+ORDER BY percentage DESC, contest_id;
+
