@@ -1,0 +1,109 @@
+--626. Exchange Seats--
+# Write your MySQL query statement below
+SELECT  (
+CASE
+    WHEN MOD(id,2) != 0 AND counts != id THEN id+1
+    WHEN MOD(id,2) != 0 AND counts = id THEN id
+    ELSE id-1 
+END
+) AS id, student
+FROM seat, (
+    SELECT COUNT(*) AS counts
+    FROM seat
+) AS alias
+ORDER BY id ASC;
+
+--185. Department Top Three Salaries--
+SELECT d.Name AS Department, e1.Name AS Employee, e1.Salary
+FROM Employee e1 
+JOIN Department d ON e1.departmentId = d.Id
+WHERE 3 > (SELECT COUNT(DISTINCT e2.Salary)
+        FROM Employee e2
+        WHERE e2.Salary > e1.Salary AND e1.DepartmentId = e2.DepartmentId
+        );
+
+--585. Investments in 2016--
+SELECT ROUND(SUM(insurance.TIV_2016),2) AS TIV_2016
+FROM insurance
+WHERE insurance.TIV_2015 IN
+    (
+      SELECT TIV_2015
+      FROM insurance
+      GROUP BY TIV_2015
+      HAVING COUNT(*) > 1
+    )
+    AND CONCAT(LAT, LON) IN
+    (
+      SELECT CONCAT(LAT, LON)
+      FROM insurance
+      GROUP BY LAT , LON
+      HAVING COUNT(*) = 1
+    );
+
+--602. Friend Requests II_ Who Has the Most Friends--
+# Write your MySQL query statement below
+SELECT requester_id AS id, 
+    ( SELECT COUNT(*) 
+    FROM RequestAccepted 
+    WHERE requester_id = id OR accepter_id = id
+    ) AS num
+    
+FROM RequestAccepted 
+GROUP BY requester_id
+
+UNION
+
+SELECT accepter_id as id,
+    ( SELECT COUNT(*) 
+    FROM RequestAccepted  
+    WHERE requester_id = id OR accepter_id = id
+    ) AS num
+FROM RequestAccepted
+GROUP BY accepter_id
+ORDER BY num DESC LIMIT 1;
+
+--1321. Restaurant Growth--
+# Write your MySQL query statement below
+SELECT 
+    a.visited_on, 
+    SUM(b.amount) AS amount, 
+    ROUND(SUM(b.amount)/7, 2) AS average_amount
+
+FROM 
+    (SELECT DISTINCT visited_on FROM Customer) a 
+    JOIN Customer b ON DATEDIFF(a.visited_on, b.visited_on) BETWEEN 0 AND 6
+
+GROUP BY a.visited_on
+HAVING a.visited_on >= MIN(b.visited_on) + 6;
+
+--1341. Movie Rating--
+# Write your MySQL query statement below
+(SELECT u.name AS results 
+  FROM MovieRating AS mr 
+  LEFT JOIN  Users AS u 
+  USING (user_id) 
+  GROUP BY user_id 
+  ORDER BY COUNT(movie_id) DESC, u.name ASC LIMIT 1) 
+ 
+ UNION ALL 
+ 
+ (SELECT m.title  
+  FROM MovieRating AS mr 
+  LEFT JOIN Movies AS m 
+  USING (movie_id) 
+  WHERE created_at BETWEEN '2020-02-01' AND '2020-02-29' 
+  GROUP BY movie_id 
+  ORDER BY AVG(rating) DESC, m.title ASC LIMIT 1);
+
+
+--1978. Employees Whose Manager Left the Company--
+# Write your MySQL query statement below
+SELECT employee_id
+FROM Employees
+WHERE salary < 30000 AND manager_id IS NOT NULL AND manager_id NOT IN(
+    SELECT employee_id 
+    FROM employees
+)
+ORDER BY employee_id;
+
+
