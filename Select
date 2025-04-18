@@ -1,20 +1,20 @@
 --584.Find customer referee--
 # Write your MySQL query statement below
-Select name from Customer where referee_id is null or referee_id != 2
+Select name from Customer where referee_id is null or referee_id != 2;
 
 --595.Big countries--
 # Write your MySQL query statement below
-select name, population, area from World where area >= 3000000 or population >= 25000000
+select name, population, area from World where area >= 3000000 or population >= 25000000;
 
 
 --1148.Article views--
 # Write your MySQL query statement below
-select distinct author_id as id from Views where author_id = viewer_id order by author_id 
+select distinct author_id as id from Views where author_id = viewer_id order by author_id;
 
 --1683.Invalid Tweets--
 # Write your MySQL query statement below
-select tweet_id from tweets where LENGTH(content) > 15
+select tweet_id from tweets where LENGTH(content) > 15;
 
 --1757.Recyclable and low fat products--
 # Write your MySQL query statement below
-Select product_id from Products where low_fats = 'Y' and recyclable = 'Y'
+Select product_id from Products where low_fats = 'Y' and recyclable = 'Y';
